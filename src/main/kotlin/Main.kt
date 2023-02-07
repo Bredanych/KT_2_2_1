@@ -12,6 +12,11 @@ data class Post(
 object WallService {
 
     private var posts = emptyArray<Post>()
+
+    fun clear() {
+        posts = emptyArray()
+    }
+
     private var postId: Int = 0
     fun add(post: Post): Post {
 
@@ -25,6 +30,20 @@ object WallService {
                 posts[index] = post.copy(likes = post.likes + 1)
             }
         }
+    }
+
+    fun update(post: Post): Boolean {
+        for ((index, sPost) in posts.withIndex()) {
+            if (sPost.id == post.id) {
+                posts[index] = post.copy(
+                    content = "updated comment",
+                    likes = post.likes + 1,
+                    published = post.published + 1
+                ) //не понятно откуда берутся обновленные данные, но как пример нарисовал вот так...
+                return true
+            }
+        }
+        return false
     }
 }
 
