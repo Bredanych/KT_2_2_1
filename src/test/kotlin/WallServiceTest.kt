@@ -24,16 +24,12 @@ class WallServiceTest {
         assertTrue(result)
     }
 
-    @Before
-    fun clearBeforeTest2() {
-        WallService.clear()
-    }
 
     @Test
     fun updateNotExisting() {
         val service = WallService
 
         val result = service.update(Post(3,4,"AthName", "cont", 25,13))
-        assertTrue(result)
+        assertFalse(result)
     }
 }

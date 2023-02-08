@@ -13,11 +13,14 @@ object WallService {
 
     private var posts = emptyArray<Post>()
 
-    fun clear() {
-        posts = emptyArray()
-    }
 
     private var postId: Int = 0
+
+    fun clear() {
+        posts = emptyArray()
+        postId = 0;
+    }
+
     fun add(post: Post): Post {
 
         posts += post.copy(id = ++postId)
