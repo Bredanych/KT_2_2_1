@@ -23,7 +23,7 @@ object WallService {
 
     fun add(post: Post): Post {
 
-        posts += post.copy(id = ++postId)
+        posts += post.copy(id = ++postId)// Вот тут я испытываю когнитивный диссонанс - да мы конечно не делаем никаких проверок, но какой бы я не прислал готовый айди, он заменится на порядковый. отчего я чуть не облысел пока ковырял автотест!
         return posts.last()
     }
 
