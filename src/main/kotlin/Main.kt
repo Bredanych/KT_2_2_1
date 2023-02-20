@@ -1,17 +1,18 @@
-data class Post(
+data class Post( //уже дата
     val id: Int,
     val authorId: Int,
     val authorName: String,
     val content: String,
     val published: Long,
-    val likes: Int,
+    val likes: Int = 0,
     val comments: Comments = Comments(),
-    val copyright: Copyright = Copyright()
+    val copyright: Copyright = Copyright(),
+    val original: Post? // Пример из лекции.
 )
 
 object WallService {
 
-    private var posts = emptyArray<Post>()
+    private var posts = emptyArray<Post>() // и так в массиве.
 
 
     private var postId: Int = 0
@@ -51,11 +52,15 @@ object WallService {
 }
 
 fun main() {
-    val post = Post(1, 1, "author", "content", likes = 0, published = 0)
-    val liked = post.copy(likes = post.likes + 1)
-    val (id, authorId, _, content) = post
-    println(liked)
-    println("$id,$authorId, $content")
+    val post = Post(1, 1, "author", "content", 0, 0, original = null)
+    val repost = Post(2, 1, "me", "repost", 0, 0, original = null)
+    WallService.add(post)
+    WallService.add(repost)
+//    val liked = post.copy(likes = post.likes + 1)
+//    val (id, authorId, _, content) = post
+//    println(liked)
+//    println("$id,$authorId, $content")
+
 }
 
 data class Comments(
