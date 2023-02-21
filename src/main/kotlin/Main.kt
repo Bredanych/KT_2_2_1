@@ -8,8 +8,12 @@ data class Post( //уже дата
     val comments: Comments = Comments(),
     val copyright: Copyright = Copyright(),
     val original: Post?, // Пример из лекции.
-    val attachment: Attachment?
+    val attachment: Attachments<Attachment>?
 )
+
+class Attachments<T> {
+    var attach = emptyArray<Attachment>()
+}
 
 object WallService {
 
