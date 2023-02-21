@@ -7,7 +7,8 @@ data class Post( //уже дата
     val likes: Int = 0,
     val comments: Comments = Comments(),
     val copyright: Copyright = Copyright(),
-    val original: Post? // Пример из лекции.
+    val original: Post?, // Пример из лекции.
+    val attachment: Attachment?
 )
 
 object WallService {
@@ -52,8 +53,8 @@ object WallService {
 }
 
 fun main() {
-    val post = Post(1, 1, "author", "content", 0, 0, original = null)
-    val repost = Post(2, 1, "me", "repost", 0, 0, original = null)
+    val post = Post(1, 1, "author", "content", 0, 0, original = null, attachment = null)
+    val repost = Post(2, 1, "me", "repost", 0, 0, original = null, attachment = null)
     WallService.add(post)
     WallService.add(repost)
 //    val liked = post.copy(likes = post.likes + 1)
