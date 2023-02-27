@@ -8,12 +8,47 @@ data class Post( //уже дата
     val comments: Comments = Comments(),
     val copyright: Copyright = Copyright(),
     val original: Post?, // Пример из лекции.
-    val attachment: Attachments<Attachment>?
-)
+    val attachment: Array<Attachment>?
+) {
+    //Не совсем понял зачем мне предложили данный автокод. И собственно что случится если его не вставлять?
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
 
-class Attachments<T> {
-    var attach = emptyArray<Attachment>()
+        other as Post
+
+        if (id != other.id) return false
+        if (authorId != other.authorId) return false
+        if (authorName != other.authorName) return false
+        if (content != other.content) return false
+        if (published != other.published) return false
+        if (likes != other.likes) return false
+        if (comments != other.comments) return false
+        if (copyright != other.copyright) return false
+        if (original != other.original) return false
+        if (attachment != null) {
+            if (other.attachment == null) return false
+            if (!attachment.contentEquals(other.attachment)) return false
+        } else if (other.attachment != null) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id
+        result = 31 * result + authorId
+        result = 31 * result + authorName.hashCode()
+        result = 31 * result + content.hashCode()
+        result = 31 * result + published.hashCode()
+        result = 31 * result + likes
+        result = 31 * result + comments.hashCode()
+        result = 31 * result + copyright.hashCode()
+        result = 31 * result + (original?.hashCode() ?: 0)
+        result = 31 * result + (attachment?.contentHashCode() ?: 0)
+        return result
+    }
 }
+
 
 object WallService {
 

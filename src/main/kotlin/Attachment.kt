@@ -1,59 +1,40 @@
-interface Attachment {
+interface Attachment { //Задача 2
+
     val type: String
-    val id: Int
-    val owner_id: Int
 }
 
-class Photo(
-    override val type: String,
-    override val id: Int,
-    override val owner_id: Int,
-    val album_id: Int,
-    val text: String
-) :
-    Attachment {
-
+data class AudioAttachment(val audio: Audio) : Attachment {
+    override val type: String = "Audio"
 }
 
-class Video(
-    override val type: String,
-    override val id: Int,
-    override val owner_id: Int,
-    val title:String,
-    val description:String,
-    val duration: Int
-) : Attachment {
+data class Audio(
+    val id: Int,
+    val duration: Int,
+    val artist: String
+)
 
+data class PhotoAttachment(val audio: Photo) : Attachment {
+    override val type: String = "Photo"
 }
 
-class Audio(
-    override val type: String,
-    override val id: Int,
-    override val owner_id: Int,
-    val title:String,
-    val description:String,
-    val duration: Int
-) : Attachment {
+data class Photo(
+    val id: Int,
+    val ownerId: Int,
+    val photo_130: String,
+    val photo_604: String,
+    val description: String
+)
 
+data class VideoAttachment(val audio: Video) : Attachment {
+    override val type: String = "Video"
 }
 
-class Doc(
-    override val type: String,
-    override val id: Int,
-    override val owner_id: Int,
-    val title:String,
-    val size:Int,
-    val ext:String
-) : Attachment {
+data class Video(
+    val id: Int,
+    val ownerId: Int,
+    val duration: Int,
+    val title: String,
+    val description: String
+)
 
-}
 
-class Graffiti(
-    override val type: String,
-    override val id: Int,
-    override val owner_id: Int,
-    val photo_130:String,
-    val photo_604:String
-) : Attachment {
-
-}
