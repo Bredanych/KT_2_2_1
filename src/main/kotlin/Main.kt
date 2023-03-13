@@ -5,12 +5,12 @@ data class Post( //уже дата
     val content: String,
     val published: Long,
     val likes: Int = 0,
-    val comments: Comments = Comments(),
+    val comments: Array<Comment>?,
     val copyright: Copyright = Copyright(),
     val original: Post?, // Пример из лекции.
     val attachment: Array<Attachment>?
 ) {
-    //Не совсем понял зачем мне предложили данный автокод. И собственно что случится если его не вставлять?
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -49,16 +49,35 @@ data class Post( //уже дата
     }
 }
 
+class PostNotFoundException(message: String) : RuntimeException(message)
 
 object WallService {
 
     private var posts = emptyArray<Post>() // и так в массиве.
-
+    private var comments = emptyArray<Comment>()
 
     private var postId: Int = 0
 
+    fun createComment(postId: Int, comment: Comment): Comment {
+
+        val post = findPost(postId) ?: throw PostNotFoundException("No post with $postId")
+        comments += comment
+
+        return comments.last()
+    }
+
+    fun findPost(postId: Int): Post? {
+        for ((index, post) in posts.withIndex()) {
+            if (post.id == postId) {
+                return post
+            }
+        }
+        return null
+    }
+
     fun clear() {
         posts = emptyArray()
+        comments = emptyArray()
         postId = 0;
     }
 
@@ -92,8 +111,8 @@ object WallService {
 }
 
 fun main() {
-    val post = Post(1, 1, "author", "content", 0, 0, original = null, attachment = null)
-    val repost = Post(2, 1, "me", "repost", 0, 0, original = null, attachment = null)
+    val post = Post(1, 1, "author", "content", 0, 0, original = null, attachment = null, comments = null)
+    val repost = Post(2, 1, "me", "repost", 0, 0, original = null, attachment = null, comments = null)
     WallService.add(post)
     WallService.add(repost)
 //    val liked = post.copy(likes = post.likes + 1)
@@ -116,4 +135,13 @@ data class Copyright(
     val link: String? = null,
     val name: String? = null,
     val type: String? = null,
+)
+
+data class Comment(
+    val id: Int,
+    val from_id: Int,
+    val date: Int,
+    val text: String,
+    val reply_to_user: Int,
+    val reply_to_commet: Int
 )
