@@ -1,23 +1,83 @@
-data class Post(
+data class Post( //уже дата
     val id: Int,
     val authorId: Int,
     val authorName: String,
     val content: String,
     val published: Long,
-    val likes: Int,
-    val comments: Comments = Comments(),
-    val copyright: Copyright = Copyright()
-)
+    val likes: Int = 0,
+    val comments: Array<Comment>?,
+    val copyright: Copyright = Copyright(),
+    val original: Post?, // Пример из лекции.
+    val attachment: Array<Attachment>?
+) {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Post
+
+        if (id != other.id) return false
+        if (authorId != other.authorId) return false
+        if (authorName != other.authorName) return false
+        if (content != other.content) return false
+        if (published != other.published) return false
+        if (likes != other.likes) return false
+        if (comments != other.comments) return false
+        if (copyright != other.copyright) return false
+        if (original != other.original) return false
+        if (attachment != null) {
+            if (other.attachment == null) return false
+            if (!attachment.contentEquals(other.attachment)) return false
+        } else if (other.attachment != null) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id
+        result = 31 * result + authorId
+        result = 31 * result + authorName.hashCode()
+        result = 31 * result + content.hashCode()
+        result = 31 * result + published.hashCode()
+        result = 31 * result + likes
+        result = 31 * result + comments.hashCode()
+        result = 31 * result + copyright.hashCode()
+        result = 31 * result + (original?.hashCode() ?: 0)
+        result = 31 * result + (attachment?.contentHashCode() ?: 0)
+        return result
+    }
+}
+
+class PostNotFoundException(message: String) : RuntimeException(message)
 
 object WallService {
 
-    private var posts = emptyArray<Post>()
-
+    private var posts = emptyArray<Post>() // и так в массиве.
+    private var comments = emptyArray<Comment>()
 
     private var postId: Int = 0
 
+    fun createComment(postId: Int, comment: Comment): Comment {
+
+        val post = findPost(postId) ?: throw PostNotFoundException("No post with $postId")
+        comments += comment
+
+        return comments.last()
+    }
+
+    fun findPost(postId: Int): Post? {
+        for ((index, post) in posts.withIndex()) {
+            if (post.id == postId) {
+                return post
+            }
+        }
+        return null
+    }
+
     fun clear() {
         posts = emptyArray()
+        comments = emptyArray()
         postId = 0;
     }
 
@@ -51,11 +111,15 @@ object WallService {
 }
 
 fun main() {
-    val post = Post(1, 1, "author", "content", likes = 0, published = 0)
-    val liked = post.copy(likes = post.likes + 1)
-    val (id, authorId, _, content) = post
-    println(liked)
-    println("$id,$authorId, $content")
+    val post = Post(1, 1, "author", "content", 0, 0, original = null, attachment = null, comments = null)
+    val repost = Post(2, 1, "me", "repost", 0, 0, original = null, attachment = null, comments = null)
+    WallService.add(post)
+    WallService.add(repost)
+//    val liked = post.copy(likes = post.likes + 1)
+//    val (id, authorId, _, content) = post
+//    println(liked)
+//    println("$id,$authorId, $content")
+
 }
 
 data class Comments(
@@ -71,4 +135,13 @@ data class Copyright(
     val link: String? = null,
     val name: String? = null,
     val type: String? = null,
+)
+
+data class Comment(
+    val id: Int,
+    val from_id: Int,
+    val date: Int,
+    val text: String,
+    val reply_to_user: Int,
+    val reply_to_commet: Int
 )
